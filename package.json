@@ -1,0 +1,64 @@
+{
+  "name": "stepflow",
+  "version": "0.1.0",
+  "description": "A flexible, type-safe workflow automation library for Node.js",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint src --ext .ts",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "type-check": "tsc --noEmit",
+    "prepublishOnly": "npm run build",
+    "prepare": "npm run build"
+  },
+  "keywords": [
+    "workflow",
+    "automation",
+    "typescript",
+    "pipeline",
+    "steps",
+    "async",
+    "retry",
+    "validation",
+    "metrics"
+  ],
+  "author": "Godspower Anyaogu <gpanyaogu@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/unhackit/stepflow.git"
+  },
+  "bugs": {
+    "url": "https://github.com/unhackit/stepflow/issues"
+  },
+  "homepage": "https://github.com/unhackit/stepflow#readme",
+  "dependencies": {
+    "zod": "^3.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0"
+  },
+  "peerDependencies": {
+    "zod": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
