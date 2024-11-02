@@ -1,4 +1,3 @@
-````markdown
 # Stepflow
 
 A flexible, type-safe workflow automation library for Node.js.
@@ -20,9 +19,6 @@ A flexible, type-safe workflow automation library for Node.js.
 ```bash
 npm install stepflow
 ```
-````
-
-````
 
 ## Usage
 
@@ -62,7 +58,7 @@ const workflow = new Workflow<UserWorkflowContext>()
 const result = await workflow.execute({
   context: { userId: 123 },
 });
-````
+```
 
 ## Core Concepts
 
