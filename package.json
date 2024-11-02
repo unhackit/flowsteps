@@ -1,7 +1,7 @@
 {
   "name": "stepflow",
   "version": "0.1.0",
-  "description": "A flexible, type-safe workflow automation library for Node.js",
+  "description": "A flexible, type-safe workflow orchestration library for Node.js",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -19,7 +19,8 @@
     "format": "prettier --write \"src/**/*.ts\"",
     "type-check": "tsc --noEmit",
     "prepublishOnly": "npm run build",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "ts": "tsc"
   },
   "keywords": [
     "workflow",
@@ -43,6 +44,7 @@
   },
   "homepage": "https://github.com/unhackit/stepflow#readme",
   "dependencies": {
+    "uuid": "11.0.2",
     "zod": "^3.0.0"
   },
   "devDependencies": {
