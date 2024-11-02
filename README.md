@@ -22,6 +22,8 @@ npm install stepflow
 ```
 ````
 
+````
+
 ## Usage
 
 ```typescript
@@ -60,7 +62,7 @@ const workflow = new Workflow<UserWorkflowContext>()
 const result = await workflow.execute({
   context: { userId: 123 },
 });
-```
+````
 
 ## Core Concepts
 
@@ -143,11 +145,3 @@ const workflow = new Workflow({
 ## Contributing
 
 Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md) for details.
-
-## License
-
-MIT
-
-```
-
-```
