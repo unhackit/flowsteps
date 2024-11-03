@@ -17,13 +17,13 @@ A flexible, type-safe workflow automation library for Node.js.
 ## Installation
 
 ```bash
-npm install stepflow
+npm install @unhackit/stepflow
 ```
 
 ## Usage
 
 ```typescript
-import { Workflow } from "stepflow";
+import { Workflow } from "@unhackit/stepflow";
 
 interface UserWorkflowContext {
   userId?: number;
@@ -95,7 +95,7 @@ const mainWorkflow = new Workflow().parallel([
 
 ```typescript
 import { z } from "zod";
-import { ZodValidator } from "stepflow";
+import { ZodValidator } from "@unhackit/stepflow";
 
 const userSchema = z.object({
   userId: z.number(),
