@@ -2,12 +2,19 @@
 
 A flexible, type-safe workflow automation library for Node.js.
 
+[![npm version](https://img.shields.io/npm/v/@unhackit/stepflow.svg)](https://www.npmjs.com/package/@unhackit/stepflow)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-4.9+-blue.svg)](https://www.typescriptlang.org/)
+
 ## Features
 
+🚀 **Core Capabilities**
 - Step-based workflow execution
 - Conditional branching
 - Parallel execution
 - Type-safe context passing
+
+⚡ **Advanced Features**
 - Input validation (Zod integration)
 - Retry mechanisms with backoff strategies
 - Built-in metrics collection
@@ -20,7 +27,7 @@ A flexible, type-safe workflow automation library for Node.js.
 npm install @unhackit/stepflow
 ```
 
-## Usage
+## Quick Start
 
 ```typescript
 import { Workflow } from "@unhackit/stepflow";
@@ -64,6 +71,8 @@ const result = await workflow.execute({
 
 ### Conditional Branching
 
+Create dynamic workflows with condition-based execution paths:
+
 ```typescript
 workflow.addCondition({
   branches: [
@@ -83,6 +92,8 @@ workflow.addCondition({
 
 ### Parallel Execution
 
+Run multiple workflows concurrently for improved performance:
+
 ```typescript
 const mainWorkflow = new Workflow().parallel([
   notificationWorkflow,
@@ -92,6 +103,8 @@ const mainWorkflow = new Workflow().parallel([
 ```
 
 ### Input Validation
+
+Ensure data integrity with Zod schema validation:
 
 ```typescript
 import { z } from "zod";
@@ -110,6 +123,8 @@ const workflow = new Workflow({
 
 ### Error Handling
 
+Implement robust error handling with lifecycle hooks:
+
 ```typescript
 const workflow = new Workflow({
   hooks: {
@@ -125,19 +140,29 @@ const workflow = new Workflow({
 ### Workflow
 
 #### Constructor Options
-
-- `name?: string`
-- `validator?: Validator<T>`
-- `metricsCollector?: MetricsCollector`
-- `hooks?: WorkflowHooks<T>`
+| Option | Type | Description |
+|--------|------|-------------|
+| `name` | `string` | Optional workflow identifier |
+| `validator` | `Validator<T>` | Input validation handler |
+| `metricsCollector` | `MetricsCollector` | Custom metrics collection |
+| `hooks` | `WorkflowHooks<T>` | Lifecycle event handlers |
 
 #### Methods
-
-- `addStep(params: StepConstructorParams<T>): this`
-- `addCondition(config: ConditionConfig<T>): this`
-- `parallel(workflows: Workflow<T>[]): Promise<this>`
-- `execute(params: { context: T }): Promise<T>`
+| Method | Description |
+|--------|-------------|
+| `addStep(params: StepConstructorParams<T>)` | Add a new step to the workflow |
+| `addCondition(config: ConditionConfig<T>)` | Add conditional branching |
+| `parallel(workflows: Workflow<T>[])` | Execute workflows in parallel |
+| `execute(params: { context: T })` | Run the workflow |
 
 ## Contributing
 
-Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md) for details.
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details on how to:
+- Submit issues
+- Create pull requests
+- Follow our coding standards
+- Join our community
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
