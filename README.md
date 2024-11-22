@@ -1,3 +1,4 @@
+
 # Stepflow
 
 A flexible, type-safe workflow automation library for Node.js.
@@ -30,40 +31,86 @@ npm install @unhackit/stepflow
 ## Quick Start
 
 ```typescript
-import { Workflow } from "@unhackit/stepflow";
+import { Workflow, WorkflowContext } from  "stepflow";
 
-interface UserWorkflowContext {
-  userId?: number;
-  userData?: {
+// Define the context shape for your workflow
+interface OnboardingContext extends WorkflowContext {
+  userId: string;
+  email: string;
+  userProfile?: {
     name: string;
-    email: string;
+    preferences: {
+      theme: "light" | "dark";
+      newsletter: boolean;
+    };
   };
-  processed?: boolean;
+  welcomeEmailSent?: boolean;
+  analyticsTracked?: boolean;
+  error?: string;
 }
 
-const workflow = new Workflow<UserWorkflowContext>()
+const onboardingWorkflow = new Workflow<OnboardingContext>({
+  name: "user-onboarding",
+  hooks: {
+    onError: ({ error, stepName }) => {
+      console.error(`Error during ${stepName}:`, error);
+    },
+  },
+}).addStep({
+    fn: async ({ context }) => {
+      context.userProfile = {
+        name: context.email.split('@')[0],
+        preferences: {
+          theme: "light",
+          newsletter: true,
+        },
+      };
+    },
+    config: { name: "create-profile" },
+  }).addCondition({
+	  branches: [
+      {
+        name: "newsletter-signup",
+        condition: ({ context }) => context.userProfile?.preferences.newsletter === true,
+        workflow: new Workflow<OnboardingContext>()
+          .addStep({
+            fn: async ({ context }) => {
+              await subscribeToNewsletter(context.email);
+            },
+            config: {
+              name: "subscribe-newsletter",
+              retries: {
+                maxAttempts: 3,
+                backoff: { type: "exponential", delay: 1000 },
+              },
+            },
+          }),
+      },
+    ],
+  })
   .addStep({
     fn: async ({ context }) => {
-      const response = await fetch(`/api/users/${context.userId}`);
-      context.userData = await response.json();
+      await sendWelcomeEmail(context.email, context.userProfile);
+      context.welcomeEmailSent = true;
     },
     config: {
-      name: "fetch-user",
-      retries: {
-        maxAttempts: 3,
-        backoff: { type: "exponential", delay: 1000 },
-      },
+      name: "send-welcome-email",
+      retries: { maxAttempts: 2, backoff: { type: "fixed", delay: 2000 } },
     },
   })
   .addStep({
-    fn: ({ context }) => {
-      context.processed = true;
+    fn: async ({ context }) => {
+      await trackSignup(context.userId, context.userProfile);
+      context.analyticsTracked = true;
     },
-    config: { name: "process-user" },
+    config: { name: "track-analytics" },
   });
 
-const result = await workflow.execute({
-  context: { userId: 123 },
+const result = await onboardingWorkflow.execute({
+  context: {
+    userId: "user_123",
+    email: "jane@example.com",
+  },
 });
 ```
 
