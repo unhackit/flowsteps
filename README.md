@@ -31,9 +31,8 @@ npm install @unhackit/stepflow
 ## Quick Start
 
 ```typescript
-import { Workflow, WorkflowContext } from  "stepflow";
+import { Workflow, WorkflowContext } from "stepflow";
 
-// Define the context shape for your workflow
 interface OnboardingContext extends WorkflowContext {
   userId: string;
   email: string;
@@ -56,7 +55,8 @@ const onboardingWorkflow = new Workflow<OnboardingContext>({
       console.error(`Error during ${stepName}:`, error);
     },
   },
-}).addStep({
+})
+  .addStep({
     fn: async ({ context }) => {
       context.userProfile = {
         name: context.email.split('@')[0],
@@ -67,26 +67,6 @@ const onboardingWorkflow = new Workflow<OnboardingContext>({
       };
     },
     config: { name: "create-profile" },
-  }).addCondition({
-	  branches: [
-      {
-        name: "newsletter-signup",
-        condition: ({ context }) => context.userProfile?.preferences.newsletter === true,
-        workflow: new Workflow<OnboardingContext>()
-          .addStep({
-            fn: async ({ context }) => {
-              await subscribeToNewsletter(context.email);
-            },
-            config: {
-              name: "subscribe-newsletter",
-              retries: {
-                maxAttempts: 3,
-                backoff: { type: "exponential", delay: 1000 },
-              },
-            },
-          }),
-      },
-    ],
   })
   .addStep({
     fn: async ({ context }) => {
