@@ -19,10 +19,10 @@ export interface WorkflowOptions<T extends WorkflowContext>
 }
 
 export class Workflow<T extends WorkflowContext = WorkflowContext>
-  implements IWorkflow<T>
+  implements IWorkflow<T & Record<string, unknown>>
 {
   private steps: Step<T>[] = [];
-  private currentContext: T | null = null;
+  private currentContext: (T & Record<string, unknown>) | null = null;
   private readonly hooks: WorkflowHooks<T>;
   private readonly name: string;
   private handledErrors = new WeakSet<Error>();
