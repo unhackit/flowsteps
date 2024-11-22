@@ -148,17 +148,29 @@ const workflow = new Workflow({
 });
 ```
 
-### Error Handling
+### Lifecycle hooks
 
-Implement robust error handling with lifecycle hooks:
+Control workflow execution with fine-grained hooks to add custom behavior at various stages of the workflow.
 
 ```typescript
-const workflow = new Workflow({
+const workflow = new Workflow<WorkflowContext>({
   hooks: {
+    beforeWorkflow: ({ context }) => {
+      console.log('Starting workflow with context:', context);
+    },
+    beforeStep: ({ stepName, context }) => {
+      console.log(`Starting step: ${stepName}`);
+    },
+    afterStep: ({ stepName, context }) => {
+      console.log(`Completed step: ${stepName}`);
+    },
+    afterWorkflow: ({ context }) => {
+      console.log('Workflow completed with context:', context);
+    },
     onError: ({ error, stepName, context }) => {
       console.error(`Error in step ${stepName}:`, error);
-    },
-  },
+    }
+  }
 });
 ```
 
