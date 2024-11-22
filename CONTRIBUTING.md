@@ -1,4 +1,4 @@
-# Contributing to Stepflow
+# Contributing to FlowSteps
 
 ## Branch Naming Convention
 
