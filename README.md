@@ -200,7 +200,6 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 - Submit issues
 - Create pull requests
 - Follow our coding standards
-- Join our community
 
 ## License
 
