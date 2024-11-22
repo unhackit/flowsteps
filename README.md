@@ -28,7 +28,7 @@ npm install flowsteps
 ## Quick Start
 
 ```typescript
-import { Workflow, WorkflowContext } from "stepflow";
+import { Workflow, WorkflowContext } from "flowsteps";
 
 interface OnboardingContext extends WorkflowContext {
   userId: string;
@@ -132,7 +132,7 @@ Ensure data integrity with Zod schema validation:
 
 ```typescript
 import { z } from "zod";
-import { ZodValidator } from "@unhackit/stepflow";
+import { ZodValidator } from "flowsteps";
 
 const userSchema = z.object({
   userId: z.number(),
