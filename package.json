@@ -1,6 +1,6 @@
 {
-  "name": "@unhackit/stepflow",
-  "version": "0.1.1",
+  "name": "flowsteps",
+  "version": "0.0.1",
   "description": "A flexible, type-safe workflow orchestration library for Node.js",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

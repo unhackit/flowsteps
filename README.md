@@ -1,21 +1,18 @@
-
-# Stepflow
+# FlowSteps
 
 A flexible, type-safe workflow automation library for Node.js.
-
-[![npm version](https://img.shields.io/npm/v/@unhackit/stepflow.svg)](https://www.npmjs.com/package/@unhackit/stepflow)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![TypeScript](https://img.shields.io/badge/TypeScript-4.9+-blue.svg)](https://www.typescriptlang.org/)
 
 ## Features
 
 🚀 **Core Capabilities**
+
 - Step-based workflow execution
 - Conditional branching
 - Parallel execution
 - Type-safe context passing
 
 ⚡ **Advanced Features**
+
 - Input validation (Zod integration)
 - Retry mechanisms with backoff strategies
 - Built-in metrics collection
@@ -25,7 +22,7 @@ A flexible, type-safe workflow automation library for Node.js.
 ## Installation
 
 ```bash
-npm install @unhackit/stepflow
+npm install flowsteps
 ```
 
 ## Quick Start
@@ -59,7 +56,7 @@ const onboardingWorkflow = new Workflow<OnboardingContext>({
   .addStep({
     fn: async ({ context }) => {
       context.userProfile = {
-        name: context.email.split('@')[0],
+        name: context.email.split("@")[0],
         preferences: {
           theme: "light",
           newsletter: true,
@@ -156,7 +153,7 @@ Control workflow execution with fine-grained hooks to add custom behavior at var
 const workflow = new Workflow<WorkflowContext>({
   hooks: {
     beforeWorkflow: ({ context }) => {
-      console.log('Starting workflow with context:', context);
+      console.log("Starting workflow with context:", context);
     },
     beforeStep: ({ stepName, context }) => {
       console.log(`Starting step: ${stepName}`);
@@ -165,12 +162,12 @@ const workflow = new Workflow<WorkflowContext>({
       console.log(`Completed step: ${stepName}`);
     },
     afterWorkflow: ({ context }) => {
-      console.log('Workflow completed with context:', context);
+      console.log("Workflow completed with context:", context);
     },
     onError: ({ error, stepName, context }) => {
       console.error(`Error in step ${stepName}:`, error);
-    }
-  }
+    },
+  },
 });
 ```
 
@@ -179,24 +176,27 @@ const workflow = new Workflow<WorkflowContext>({
 ### Workflow
 
 #### Constructor Options
-| Option | Type | Description |
-|--------|------|-------------|
-| `name` | `string` | Optional workflow identifier |
-| `validator` | `Validator<T>` | Input validation handler |
-| `metricsCollector` | `MetricsCollector` | Custom metrics collection |
-| `hooks` | `WorkflowHooks<T>` | Lifecycle event handlers |
+
+| Option             | Type               | Description                  |
+| ------------------ | ------------------ | ---------------------------- |
+| `name`             | `string`           | Optional workflow identifier |
+| `validator`        | `Validator<T>`     | Input validation handler     |
+| `metricsCollector` | `MetricsCollector` | Custom metrics collection    |
+| `hooks`            | `WorkflowHooks<T>` | Lifecycle event handlers     |
 
 #### Methods
-| Method | Description |
-|--------|-------------|
+
+| Method                                      | Description                    |
+| ------------------------------------------- | ------------------------------ |
 | `addStep(params: StepConstructorParams<T>)` | Add a new step to the workflow |
-| `addCondition(config: ConditionConfig<T>)` | Add conditional branching |
-| `parallel(workflows: Workflow<T>[])` | Execute workflows in parallel |
-| `execute(params: { context: T })` | Run the workflow |
+| `addCondition(config: ConditionConfig<T>)`  | Add conditional branching      |
+| `parallel(workflows: Workflow<T>[])`        | Execute workflows in parallel  |
+| `execute(params: { context: T })`           | Run the workflow               |
 
 ## Contributing
 
 We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details on how to:
+
 - Submit issues
 - Create pull requests
 - Follow our coding standards
