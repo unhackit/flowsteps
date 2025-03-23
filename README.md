@@ -1,206 +1,110 @@
-# FlowSteps
+# Frontend Documentation
 
-A flexible, type-safe workflow automation library for Node.js.
+## Overview
 
-## Features
+The frontend of WinLog is built with React, TypeScript, and Tailwind CSS. It provides a modern, responsive user interface for tracking professional achievements and managing projects.
 
-🚀 **Core Capabilities**
+## Key Components
 
-- Step-based workflow execution
-- Conditional branching
-- Parallel execution
-- Type-safe context passing
+### Dashboard Layout
 
-⚡ **Advanced Features**
+The dashboard layout provides the main structure for the authenticated user experience:
 
-- Input validation (Zod integration)
-- Retry mechanisms with backoff strategies
-- Built-in metrics collection
-- Lifecycle hooks
-- Error handling and recovery
+- **Sidebar Navigation**: Access to Dashboard, Achievements, Projects, Profile, and Settings
+- **Responsive Design**: Collapsible sidebar for desktop, mobile-friendly drawer navigation
+- **User Profile Menu**: Quick access to profile, settings, and logout
 
-## Installation
+### Dashboard
 
-```bash
-npm install flowsteps
-```
+The main dashboard displays:
 
-## Quick Start
+- Recent achievements
+- Project summaries
+- Achievement statistics
+- Quick actions for logging new achievements
 
-```typescript
-import { Workflow, WorkflowContext } from "flowsteps";
+### Achievements
 
-interface OnboardingContext extends WorkflowContext {
-  userId: string;
-  email: string;
-  userProfile?: {
-    name: string;
-    preferences: {
-      theme: "light" | "dark";
-      newsletter: boolean;
-    };
-  };
-  welcomeEmailSent?: boolean;
-  analyticsTracked?: boolean;
-  error?: string;
-}
+The Achievements module allows users to:
 
-const onboardingWorkflow = new Workflow<OnboardingContext>({
-  name: "user-onboarding",
-  hooks: {
-    onError: ({ error, stepName }) => {
-      console.error(`Error during ${stepName}:`, error);
-    },
-  },
-})
-  .addStep({
-    fn: async ({ context }) => {
-      context.userProfile = {
-        name: context.email.split("@")[0],
-        preferences: {
-          theme: "light",
-          newsletter: true,
-        },
-      };
-    },
-    config: { name: "create-profile" },
-  })
-  .addStep({
-    fn: async ({ context }) => {
-      await sendWelcomeEmail(context.email, context.userProfile);
-      context.welcomeEmailSent = true;
-    },
-    config: {
-      name: "send-welcome-email",
-      retries: { maxAttempts: 2, backoff: { type: "fixed", delay: 2000 } },
-    },
-  })
-  .addStep({
-    fn: async ({ context }) => {
-      await trackSignup(context.userId, context.userProfile);
-      context.analyticsTracked = true;
-    },
-    config: { name: "track-analytics" },
-  });
+- View all logged achievements
+- Filter achievements by category, impact level, and date
+- Search for specific achievements
+- View achievement details
 
-const result = await onboardingWorkflow.execute({
-  context: {
-    userId: "user_123",
-    email: "jane@example.com",
-  },
-});
-```
+### Projects
 
-## Core Concepts
+The Projects module enables users to:
 
-### Conditional Branching
+- View all projects
+- Create new projects
+- View project details including associated achievements
+- Track project progress
 
-Create dynamic workflows with condition-based execution paths:
+### Profile
 
-```typescript
-workflow.addCondition({
-  branches: [
-    {
-      name: "premium-user",
-      condition: ({ context }) => context.userData?.isPremium,
-      workflow: premiumWorkflow,
-    },
-    {
-      name: "regular-user",
-      condition: ({ context }) => !context.userData?.isPremium,
-      workflow: regularWorkflow,
-    },
-  ],
-});
-```
+The Profile component displays and allows editing of:
 
-### Parallel Execution
+- Personal information (name, email, title)
+- Professional details (department, location)
+- Bio/professional summary
 
-Run multiple workflows concurrently for improved performance:
+### Settings
 
-```typescript
-const mainWorkflow = new Workflow().parallel([
-  notificationWorkflow,
-  dataProcessingWorkflow,
-  analyticsWorkflow,
-]);
-```
+The Settings module provides:
 
-### Input Validation
+- **Notification Preferences**: Control email and push notifications
+- **Integrations**: Connect with external tools like Slack, Microsoft Teams, and Google Workspace
 
-Ensure data integrity with Zod schema validation:
+### LogAchievement
 
-```typescript
-import { z } from "zod";
-import { ZodValidator } from "flowsteps";
+The LogAchievement component provides multiple ways to log achievements:
 
-const userSchema = z.object({
-  userId: z.number(),
-  email: z.string().email(),
-  age: z.number().min(18),
-});
+- **Manual Entry**: Traditional form-based input
+- **AI-Assisted**: Generate achievement content from a brief description
+- **Voice Recording**: Record and transcribe achievements
 
-const workflow = new Workflow({
-  validator: new ZodValidator(userSchema),
-});
-```
+## UI Components
 
-### Lifecycle hooks
+The application uses a combination of custom UI components and shadcn/ui components:
 
-Control workflow execution with fine-grained hooks to add custom behavior at various stages of the workflow.
+- **Button**: Primary actions, secondary actions, and outline variants
+- **Input**: Text input fields with validation
+- **Textarea**: Multi-line text input
+- **Card**: Content containers with consistent styling
+- **Sheet**: Slide-in panels for forms and details
+- **Tabs**: Organize content into tabbed interfaces
+- **Switch**: Toggle controls for settings
+- **Label**: Form field labels with consistent styling
 
-```typescript
-const workflow = new Workflow<WorkflowContext>({
-  hooks: {
-    beforeWorkflow: ({ context }) => {
-      console.log("Starting workflow with context:", context);
-    },
-    beforeStep: ({ stepName, context }) => {
-      console.log(`Starting step: ${stepName}`);
-    },
-    afterStep: ({ stepName, context }) => {
-      console.log(`Completed step: ${stepName}`);
-    },
-    afterWorkflow: ({ context }) => {
-      console.log("Workflow completed with context:", context);
-    },
-    onError: ({ error, stepName, context }) => {
-      console.error(`Error in step ${stepName}:`, error);
-    },
-  },
-});
-```
+## Routing Structure
 
-## API Reference
+/dashboard                  # Main dashboard
 
-### Workflow
+/dashboard/achievements     # Achievements list and management
 
-#### Constructor Options
+/dashboard/projects         # Projects list and management
 
-| Option             | Type               | Description                  |
-| ------------------ | ------------------ | ---------------------------- |
-| `name`             | `string`           | Optional workflow identifier |
-| `validator`        | `Validator<T>`     | Input validation handler     |
-| `metricsCollector` | `MetricsCollector` | Custom metrics collection    |
-| `hooks`            | `WorkflowHooks<T>` | Lifecycle event handlers     |
+/dashboard/profile          # User profile
 
-#### Methods
+/dashboard/settings         # Application settings
 
-| Method                                      | Description                    |
-| ------------------------------------------- | ------------------------------ |
-| `addStep(params: StepConstructorParams<T>)` | Add a new step to the workflow |
-| `addCondition(config: ConditionConfig<T>)`  | Add conditional branching      |
-| `parallel(workflows: Workflow<T>[])`        | Execute workflows in parallel  |
-| `execute(params: { context: T })`           | Run the workflow               |
+## State Management
 
-## Contributing
+- **Local Component State**: Used for UI state and form handling
+- **URL Parameters**: Used for filtering and navigation state
 
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details on how to:
+## Styling
 
-- Submit issues
-- Create pull requests
-- Follow our coding standards
+- **Tailwind CSS**: Utility-first CSS framework for consistent styling
+- **Custom Theme**: Primary color scheme and consistent UI elements
+- **Responsive Design**: Mobile-first approach with desktop enhancements
 
-## License
+## Future Enhancements
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+- **Dark Mode**: Theme toggle between light and dark modes
+- **Data Persistence**: Connect to backend API for data storage
+- **Authentication**: Implement proper user authentication flow
+- **Advanced Filtering**: More robust filtering and sorting options
+- **Notifications**: Real-time notification system
+- **Team Collaboration**: Features for team-based achievement tracking
