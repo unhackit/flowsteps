@@ -1,110 +1,119 @@
-# Frontend Documentation
+# FlowSteps
+
+A flexible, type-safe workflow orchestration library for Node.js.
 
 ## Overview
 
-The frontend of WinLog is built with React, TypeScript, and Tailwind CSS. It provides a modern, responsive user interface for tracking professional achievements and managing projects.
+FlowSteps helps you build robust, maintainable workflows by providing a type-safe framework for defining steps, handling errors, and managing execution flow. It's perfect for complex business processes, ETL pipelines, or any scenario where you need to orchestrate multiple steps with error handling and validation.
 
-## Key Components
+## Features
 
-### Dashboard Layout
+- **Type Safety**: Built with TypeScript for full type checking and IDE support
+- **Step-Based Architecture**: Break complex workflows into simple, reusable steps
+- **Error Handling**: Robust error management with customizable retry strategies
+- **Validation**: Validate context data between steps using built-in validation
+- **Conditional Branching**: Define conditional logic to determine workflow paths
+- **Parallel Execution**: Run steps or sub-workflows in parallel
+- **Metrics Collection**: Built-in support for collecting execution metrics
+- **Extensibility**: Easily extend with custom validators and hooks
 
-The dashboard layout provides the main structure for the authenticated user experience:
+## Installation
 
-- **Sidebar Navigation**: Access to Dashboard, Achievements, Projects, Profile, and Settings
-- **Responsive Design**: Collapsible sidebar for desktop, mobile-friendly drawer navigation
-- **User Profile Menu**: Quick access to profile, settings, and logout
+```bash
+npm install flowsteps
+```
 
-### Dashboard
+## Basic Usage
 
-The main dashboard displays:
+```typescript
+import { Workflow, WorkflowContext } from 'flowsteps';
 
-- Recent achievements
-- Project summaries
-- Achievement statistics
-- Quick actions for logging new achievements
+// Define your context interface
+interface MyContext extends WorkflowContext {
+  value: number;
+}
 
-### Achievements
+// Create a workflow
+const workflow = new Workflow<MyContext>();
 
-The Achievements module allows users to:
+// Add steps
+workflow
+  .addStep({
+    fn: ({ context }) => {
+      context.value = context.value * 2;
+    },
+    config: { name: 'double-value' },
+  })
+  .addStep({
+    fn: async ({ context }) => {
+      // You can perform async operations
+      await someAsyncOperation();
+      context.value += 10;
+    },
+    config: { name: 'add-ten' },
+  });
 
-- View all logged achievements
-- Filter achievements by category, impact level, and date
-- Search for specific achievements
-- View achievement details
+// Execute the workflow
+const result = await workflow.execute({ context: { value: 5 } });
+console.log(result.value); // Output: 20
+```
 
-### Projects
+## Advanced Features
 
-The Projects module enables users to:
+### Retry Logic
 
-- View all projects
-- Create new projects
-- View project details including associated achievements
-- Track project progress
+```typescript
+workflow.addStep({
+  fn: ({ context }) => {
+    // This might fail sometimes
+    performRiskyOperation(context);
+  },
+  config: {
+    name: 'risky-operation',
+    retries: {
+      maxAttempts: 3,
+      backoff: {
+        type: 'exponential',
+        delay: 100, // 100ms, 200ms, 400ms
+      },
+      shouldRetry: (error) => error.message.includes('RETRY_ME'),
+    },
+  },
+});
+```
 
-### Profile
+### Conditional Branching
 
-The Profile component displays and allows editing of:
+```typescript
+workflow.addCondition({
+  branches: [
+    {
+      condition: ({ context }) => context.value > 10,
+      workflow: highValueWorkflow,
+    },
+    {
+      condition: ({ context }) => context.value < 0,
+      workflow: negativeValueWorkflow,
+    },
+  ],
+  defaultWorkflow: normalValueWorkflow,
+});
+```
 
-- Personal information (name, email, title)
-- Professional details (department, location)
-- Bio/professional summary
+### Parallel Execution
 
-### Settings
+```typescript
+workflow.parallel([
+  workflowA,
+  workflowB,
+  workflowC,
+]);
+```
 
-The Settings module provides:
+## Documentation
 
-- **Notification Preferences**: Control email and push notifications
-- **Integrations**: Connect with external tools like Slack, Microsoft Teams, and Google Workspace
+For full documentation and examples, please visit our [GitHub repository](https://github.com/unhackit/stepflow).
 
-### LogAchievement
+## License
 
-The LogAchievement component provides multiple ways to log achievements:
-
-- **Manual Entry**: Traditional form-based input
-- **AI-Assisted**: Generate achievement content from a brief description
-- **Voice Recording**: Record and transcribe achievements
-
-## UI Components
-
-The application uses a combination of custom UI components and shadcn/ui components:
-
-- **Button**: Primary actions, secondary actions, and outline variants
-- **Input**: Text input fields with validation
-- **Textarea**: Multi-line text input
-- **Card**: Content containers with consistent styling
-- **Sheet**: Slide-in panels for forms and details
-- **Tabs**: Organize content into tabbed interfaces
-- **Switch**: Toggle controls for settings
-- **Label**: Form field labels with consistent styling
-
-## Routing Structure
-
-/dashboard                  # Main dashboard
-
-/dashboard/achievements     # Achievements list and management
-
-/dashboard/projects         # Projects list and management
-
-/dashboard/profile          # User profile
-
-/dashboard/settings         # Application settings
-
-## State Management
-
-- **Local Component State**: Used for UI state and form handling
-- **URL Parameters**: Used for filtering and navigation state
-
-## Styling
-
-- **Tailwind CSS**: Utility-first CSS framework for consistent styling
-- **Custom Theme**: Primary color scheme and consistent UI elements
-- **Responsive Design**: Mobile-first approach with desktop enhancements
-
-## Future Enhancements
-
-- **Dark Mode**: Theme toggle between light and dark modes
-- **Data Persistence**: Connect to backend API for data storage
-- **Authentication**: Implement proper user authentication flow
-- **Advanced Filtering**: More robust filtering and sorting options
-- **Notifications**: Real-time notification system
-- **Team Collaboration**: Features for team-based achievement tracking
+MIT
