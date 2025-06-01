@@ -11,6 +11,7 @@ FlowSteps helps you build robust, maintainable workflows by providing a type-saf
 - **Type Safety**: Built with TypeScript for full type checking and IDE support
 - **Step-Based Architecture**: Break complex workflows into simple, reusable steps
 - **Error Handling**: Robust error management with customizable retry strategies
+- **Step Timeouts**: Prevent steps from running indefinitely with configurable timeouts
 - **Validation**: Validate context data between steps using built-in validation
 - **Conditional Branching**: Define conditional logic to determine workflow paths
 - **Parallel Execution**: Run steps or sub-workflows in parallel
@@ -78,6 +79,21 @@ workflow.addStep({
       },
       shouldRetry: (error) => error.message.includes('RETRY_ME'),
     },
+  },
+});
+```
+
+### Step Timeouts
+
+```typescript
+workflow.addStep({
+  fn: async ({ context }) => {
+    // This operation might take too long
+    await performLongRunningOperation(context);
+  },
+  config: {
+    name: 'long-operation',
+    timeout: 5000, // 5 seconds timeout
   },
 });
 ```

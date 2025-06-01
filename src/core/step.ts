@@ -26,6 +26,14 @@ export class Step<T extends WorkflowContext = WorkflowContext> {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
+  private createTimeoutPromise(timeoutMs: number): Promise<never> {
+    return new Promise((_, reject) => {
+      setTimeout(() => {
+        reject(new Error(`Step '${this.config.name}' timed out after ${timeoutMs}ms`));
+      }, timeoutMs);
+    });
+  }
+
   private calculateBackoff(attempt: number, config: RetryConfig): number {
     const { backoff } = config;
     if (!backoff) return 0;
@@ -57,7 +65,15 @@ export class Step<T extends WorkflowContext = WorkflowContext> {
       attempt++
     ) {
       try {
-        await this.stepFn({ context });
+        // Execute step function with optional timeout
+        if (this.config.timeout && this.config.timeout > 0) {
+          await Promise.race([
+            this.stepFn({ context }),
+            this.createTimeoutPromise(this.config.timeout),
+          ]);
+        } else {
+          await this.stepFn({ context });
+        }
         return;
       } catch (error) {
         lastError = error as Error;
